@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Wisdom Library</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  :root {
+    --bg: #f5f0e8;
+    --card: #ffffff;
+    --text: #2c2418;
+    --text-secondary: #6b5d4d;
+    --accent-devo: #2d5a27;
+    --accent-devo-light: #e8f0e6;
+    --accent-moss: #1a4a6b;
+    --accent-moss-light: #e3eef5;
+    --accent-dm: #8b3a1d;
+    --accent-dm-light: #f5ebe6;
+    --border: #d9d0c3;
+    --shadow: 0 2px 12px rgba(44,36,24,0.08);
+    --radius: 12px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #2c2418 0%, #4a3c2e 100%);
+    color: #f5f0e8;
+    padding: 24px 20px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 2px;
+  }
+  .header .subtitle {
+    font-size: 12px;
+    opacity: 0.6;
+    font-weight: 400;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 0;
+    background: #1e1812;
+    padding: 0 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(245,240,232,0.5);
+    border: none;
+    background: none;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .tab.active { color: #f5f0e8; }
+  .tab[data-tab="devo"].active { border-bottom-color: var(--accent-devo); }
+  .tab[data-tab="moss"].active { border-bottom-color: var(--accent-moss); }
+  .tab[data-tab="dm"].active { border-bottom-color: var(--accent-dm); }
+
+  .search-area {
+    padding: 16px 16px 8px;
+    position: sticky;
+    top: 74px;
+    z-index: 99;
+    background: var(--bg);
+  }
+  .search-box {
+    position: relative;
+  }
+  .search-box svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: var(--text-secondary);
+  }
+  .search-box input {
+    width: 100%;
+    padding: 14px 44px 14px 42px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--card);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-box input:focus { border-color: var(--text-secondary); }
+  .search-box input::placeholder { color: #b0a494; }
+  .btn-clear {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--border);
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-clear.show { display: flex; }
+  .search-hint {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    padding-left: 4px;
+  }
+  .result-count {
+    font-size: 12px;
+    color: var(--text-secondary);
+    padding: 8px 20px 4px;
+    font-weight: 500;
+  }
+
+  .cards { padding: 4px 16px 100px; }
+
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--accent-devo);
+    animation: fadeUp 0.25s ease both;
+  }
+  .card[data-source="moss"] { border-left-color: var(--accent-moss); }
+  .card[data-source="dm"] { border-left-color: var(--accent-dm); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    gap: 8px;
+  }
+  .card-source {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .card[data-source="devo"] .card-source { color: var(--accent-devo); background: var(--accent-devo-light); }
+  .card[data-source="moss"] .card-source { color: var(--accent-moss); background: var(--accent-moss-light); }
+  .card[data-source="dm"] .card-source { color: var(--accent-dm); background: var(--accent-dm-light); }
+
+  .card-date {
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+  .card-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .card-author {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+  .card-scripture {
+    font-size: 12px;
+    font-style: italic;
+    color: var(--accent-devo);
+    margin-bottom: 8px;
+    line-height: 1.4;
+    font-family: 'Libre Baskerville', serif;
+  }
+  .card-summary {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+    display: none;
+    margin-bottom: 10px;
+  }
+  .card.expanded .card-summary { display: block; }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 10px;
+  }
+  .tag {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: var(--bg);
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 8px;
+    border-top: 1px solid #f0ebe3;
+  }
+  .btn-expand {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 0;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-gmail {
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--accent-devo);
+    border: none;
+    border-radius: 6px;
+    padding: 7px 12px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .card[data-source="moss"] .btn-gmail { background: var(--accent-moss); }
+  .card[data-source="dm"] .btn-gmail { background: var(--accent-dm); }
+
+  .card-action-item {
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: #faf7f2;
+    padding: 8px 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    display: none;
+    line-height: 1.4;
+  }
+  .card-action-item strong { color: var(--text); }
+  .card.expanded .card-action-item { display: block; }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+  }
+  .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; line-height: 1.5; }
+
+  .loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+  }
+  .loading .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent-devo);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .status-bar {
+    font-size: 10px;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 4px;
+    opacity: 0.5;
+  }
+
+  mark {
+    background: #fce9a0;
+    color: inherit;
+    padding: 0 1px;
+    border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Wisdom Library</h1>
+  <div class="subtitle">Devotionals · Mark Moss · Dan Martell</div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-tab="devo">📖 Devotionals</button>
+  <button class="tab" data-tab="moss">📈 Mark Moss</button>
+  <button class="tab" data-tab="dm">🚀 Dan Martell</button>
+</div>
+
+<div class="search-area">
+  <div class="search-box">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+    <input type="text" id="searchInput" placeholder="Search topics, scripture, keywords...">
+    <button class="btn-clear" id="clearBtn" onclick="clearSearch()">✕</button>
+  </div>
+  <div class="search-hint" id="searchHint">Search across titles, scripture, tags, and summaries</div>
+</div>
+
+<div class="result-count" id="resultCount"></div>
+<div class="cards" id="cardContainer">
+  <div class="loading"><div class="spinner"></div><p>Loading wisdom...</p></div>
+</div>
+<div class="status-bar" id="statusBar"></div>
+
+<script>
+// ============================================================
+// CONFIGURATION — Update these URLs after publishing your sheet
+// ============================================================
+// Instructions:
+// 1. Open your Google Sheet
+// 2. File → Share → Publish to web
+// 3. Select each tab individually, choose "Comma-separated values (.csv)"
+// 4. Copy each URL below
+//
+// FORMAT: https://docs.google.com/spreadsheets/d/e/XXXXX/pub?gid=YYYYYY&single=true&output=csv
+// ============================================================
+
+const SHEET_URLS = {
+  // Your published Google Sheet CSV URLs
+  devo: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9pJVqSfaxBxr3XHVxUJSrd2fbp30Afip4RG2ijzRTS1zLbbGshIlbzSgUd2Vejcamu1KAQxA591Au/pub?gid=19034336&single=true&output=csv",
+  moss: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9pJVqSfaxBxr3XHVxUJSrd2fbp30Afip4RG2ijzRTS1zLbbGshIlbzSgUd2Vejcamu1KAQxA591Au/pub?gid=1138198135&single=true&output=csv",
+  dm:   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9pJVqSfaxBxr3XHVxUJSrd2fbp30Afip4RG2ijzRTS1zLbbGshIlbzSgUd2Vejcamu1KAQxA591Au/pub?gid=2002495787&single=true&output=csv",
+};
+
+// ============================================================
+
+const DATA = { devo: [], moss: [], dm: [] };
+let activeTab = 'devo';
+let searchQuery = '';
+let dataLoaded = false;
+
+// ---- CSV PARSER ----
+function parseCSV(text) {
+  const rows = [];
+  let current = '';
+  let inQuotes = false;
+  const chars = text.split('');
+  let row = [];
+
+  for (let i = 0; i < chars.length; i++) {
+    const c = chars[i];
+    if (inQuotes) {
+      if (c === '"' && chars[i+1] === '"') {
+        current += '"';
+        i++;
+      } else if (c === '"') {
+        inQuotes = false;
+      } else {
+        current += c;
+      }
+    } else {
+      if (c === '"') {
+        inQuotes = true;
+      } else if (c === ',') {
+        row.push(current.trim());
+        current = '';
+      } else if (c === '\n') {
+        row.push(current.trim());
+        if (row.some(cell => cell.length > 0)) rows.push(row);
+        row = [];
+        current = '';
+      } else if (c !== '\r') {
+        current += c;
+      }
+    }
+  }
+  if (current || row.length > 0) {
+    row.push(current.trim());
+    if (row.some(cell => cell.length > 0)) rows.push(row);
+  }
+  return rows;
+}
+
+// ---- LOAD DATA FROM SHEETS ----
+async function loadData() {
+  const container = document.getElementById('cardContainer');
+  const statusBar = document.getElementById('statusBar');
+
+  // Check if URLs have been configured
+  if (SHEET_URLS.devo.includes('PASTE_YOUR')) {
+    container.innerHTML = `<div class="empty-state"><div class="icon">⚙️</div><p>Sheet URLs not configured yet.<br>Follow the setup instructions to connect your Google Sheet.</p></div>`;
+    return;
+  }
+
+  try {
+    const [devoResp, mossResp, dmResp] = await Promise.all([
+      fetch(SHEET_URLS.devo).then(r => r.text()),
+      fetch(SHEET_URLS.moss).then(r => r.text()),
+      fetch(SHEET_URLS.dm).then(r => r.text()),
+    ]);
+
+    // Parse Devotionals: Date, Source, Author, Title, Scripture, Tags, Summary, Gmail
+    const devoRows = parseCSV(devoResp);
+    DATA.devo = devoRows.slice(1).map(r => ({
+      date: r[0] || '',
+      source: r[1] || '',
+      author: r[2] || '',
+      title: r[3] || '',
+      scripture: r[4] || '',
+      tags: (r[5] || '').split(',').map(t => t.trim()).filter(Boolean),
+      summary: r[6] || '',
+      gmailUrl: r[7] || '',
+    })).filter(r => r.title);
+
+    // Parse Mark Moss: Date, Source, Title, Insight, Tags, Action, Gmail
+    const mossRows = parseCSV(mossResp);
+    DATA.moss = mossRows.slice(1).map(r => ({
+      date: r[0] || '',
+      source: r[1] || 'Mark Moss',
+      title: r[2] || '',
+      insight: r[3] || '',
+      tags: (r[4] || '').split(',').map(t => t.trim()).filter(Boolean),
+      action: r[5] || '',
+      gmailUrl: r[6] || '',
+    })).filter(r => r.title);
+
+    // Parse Dan Martell: Date, Source, Title, Insight, Tags, Action, Gmail
+    const dmRows = parseCSV(dmResp);
+    DATA.dm = dmRows.slice(1).map(r => ({
+      date: r[0] || '',
+      source: r[1] || 'Dan Martell',
+      title: r[2] || '',
+      insight: r[3] || '',
+      tags: (r[4] || '').split(',').map(t => t.trim()).filter(Boolean),
+      action: r[5] || '',
+      gmailUrl: r[6] || '',
+    })).filter(r => r.title);
+
+    dataLoaded = true;
+    statusBar.textContent = `${DATA.devo.length} devotionals · ${DATA.moss.length} Mark Moss · ${DATA.dm.length} Dan Martell`;
+    renderCards();
+
+  } catch (err) {
+    container.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>Couldn't load data. Check your internet connection and sheet URLs.<br><br><small>${err.message}</small></p></div>`;
+  }
+}
+
+// ---- SEARCH & RENDER ----
+function highlightText(text, query) {
+  if (!query || query.length < 2) return text;
+  const terms = query.toLowerCase().split(/\s+/).filter(t => t.length >= 2);
+  let result = text;
+  terms.forEach(term => {
+    const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+    result = result.replace(regex, '<mark>$1</mark>');
+  });
+  return result;
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  try {
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' });
+  } catch { return dateStr; }
+}
+
+function matchesSearch(item, query) {
+  if (!query || query.length < 2) return true;
+  const terms = query.toLowerCase().split(/\s+/).filter(t => t.length >= 2);
+  const searchable = [
+    item.title || '',
+    item.scripture || '',
+    item.summary || item.insight || '',
+    item.author || '',
+    item.source || '',
+    (item.tags || []).join(' '),
+    item.action || ''
+  ].join(' ').toLowerCase();
+  return terms.every(term => searchable.includes(term));
+}
+
+function renderCards() {
+  if (!dataLoaded) return;
+  const container = document.getElementById('cardContainer');
+  const countEl = document.getElementById('resultCount');
+  const items = DATA[activeTab];
+  const filtered = items.filter(item => matchesSearch(item, searchQuery));
+
+  countEl.textContent = searchQuery.length >= 2
+    ? `${filtered.length} of ${items.length} entries`
+    : `${items.length} entries`;
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>No results for "${searchQuery}"<br>Try different keywords</p></div>`;
+    return;
+  }
+
+  const sourceType = activeTab;
+
+  container.innerHTML = filtered.map((item, i) => {
+    const isDevo = activeTab === 'devo';
+    const contentText = isDevo ? (item.summary || '') : (item.insight || '');
+    const q = searchQuery;
+    const gmailUrl = item.gmailUrl || '#';
+
+    return `
+      <div class="card" data-source="${sourceType}" style="animation-delay:${Math.min(i * 0.03, 0.5)}s">
+        <div class="card-top">
+          <span class="card-source">${isDevo ? item.source : (activeTab === 'moss' ? 'Mark Moss' : 'Dan Martell')}</span>
+          <span class="card-date">${formatDate(item.date)}</span>
+        </div>
+        <div class="card-title">${highlightText(item.title, q)}</div>
+        ${isDevo ? `<div class="card-author">${item.author}</div>` : ''}
+        ${isDevo && item.scripture && !item.scripture.startsWith('(') ? `<div class="card-scripture">${highlightText(item.scripture, q)}</div>` : ''}
+        <div class="card-tags">${(item.tags||[]).map(t => `<span class="tag">${highlightText(t, q)}</span>`).join('')}</div>
+        <div class="card-summary">${highlightText(contentText, q)}</div>
+        ${!isDevo && item.action ? `<div class="card-action-item"><strong>→ Action:</strong> ${highlightText(item.action, q)}</div>` : ''}
+        <div class="card-actions">
+          <button class="btn-expand" onclick="toggleCard(this)">Read more ▾</button>
+          <a class="btn-gmail" href="${gmailUrl}" target="_blank" rel="noopener">📧 Find Email</a>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleCard(btn) {
+  const card = btn.closest('.card');
+  card.classList.toggle('expanded');
+  btn.textContent = card.classList.contains('expanded') ? 'Show less ▴' : 'Read more ▾';
+}
+
+function clearSearch() {
+  const input = document.getElementById('searchInput');
+  input.value = '';
+  searchQuery = '';
+  document.getElementById('clearBtn').classList.remove('show');
+  renderCards();
+  input.focus();
+}
+
+// ---- EVENTS ----
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    activeTab = tab.dataset.tab;
+    const hint = document.getElementById('searchHint');
+    hint.textContent = activeTab === 'devo'
+      ? 'Search across titles, scripture, tags, and summaries'
+      : 'Search across titles, tags, insights, and action items';
+    renderCards();
+  });
+});
+
+let debounceTimer;
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  clearTimeout(debounceTimer);
+  const clearBtn = document.getElementById('clearBtn');
+  clearBtn.classList.toggle('show', e.target.value.length > 0);
+  debounceTimer = setTimeout(() => {
+    searchQuery = e.target.value.trim();
+    renderCards();
+  }, 150);
+});
+
+// ---- INIT ----
+loadData();
+</script>
+</body>
+</html>
