@@ -707,9 +707,12 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
 // ---- GMAIL SEARCH POPUP ----
 function extractSearchQuery(gmailUrl) {
   try {
-    const decoded = decodeURIComponent(gmailUrl.split('#search/')[1] || '');
-    return decoded;
-  } catch { return ''; }
+    const encoded = gmailUrl.split('#search/')[1] || '';
+    return decodeURIComponent(encoded.replace(/%20/g, ' '));
+  } catch { 
+    try { return gmailUrl.split('#search/')[1].replace(/%20/g, ' ').replace(/%3A/g, ':').replace(/%40/g, '@'); }
+    catch { return ''; }
+  }
 }
 
 function showGmailPopup(gmailUrl, btn) {
@@ -728,38 +731,42 @@ function showGmailPopup(gmailUrl, btn) {
   const source = card.dataset.source;
   const accentColor = source === 'moss' ? 'var(--accent-moss)' : source === 'dm' ? 'var(--accent-dm)' : 'var(--accent-devo)';
   
+  // Store the search query on a data attribute to avoid escaping issues
   overlay.innerHTML = `
     <div class="gmail-popup">
       <h3>📧 Find This Email</h3>
       <p>Tap <strong>Open Gmail</strong> to try opening it directly. If the search doesn't carry through on mobile, tap <strong>Copy Search</strong> then paste it into Gmail's search bar.</p>
-      <div class="gmail-search-text">${searchQuery}</div>
+      <div class="gmail-search-text" id="gmailSearchText">${searchQuery}</div>
       <div class="gmail-popup-actions">
-        <button class="btn-copy-search" style="background:${accentColor}" onclick="copySearch('${searchQuery.replace(/'/g, "\\'")}', this)">📋 Copy Search</button>
-        <button class="btn-open-gmail" onclick="window.open('${gmailUrl}', '_blank')">Open Gmail →</button>
+        <button class="btn-copy-search" style="background:${accentColor}" id="btnCopySearch">📋 Copy Search</button>
+        <button class="btn-open-gmail" id="btnOpenGmail">Open Gmail →</button>
       </div>
       <button class="btn-close-popup" onclick="this.closest('.gmail-overlay').remove()">Dismiss</button>
     </div>
   `;
 
   document.body.appendChild(overlay);
+  
+  // Attach events after DOM insertion to avoid escaping issues
+  document.getElementById('btnCopySearch').onclick = () => copySearch(searchQuery);
+  document.getElementById('btnOpenGmail').onclick = () => window.open(gmailUrl, '_blank');
 }
 
-function copySearch(text, btn) {
+function copySearch(text) {
+  const btn = document.getElementById('btnCopySearch');
   navigator.clipboard.writeText(text).then(() => {
-    // Show toast
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.textContent = '✓ Copied — paste in Gmail search';
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 2000);
     
-    // Update button text briefly
     const original = btn.innerHTML;
     btn.innerHTML = '✓ Copied!';
     setTimeout(() => { btn.innerHTML = original; }, 1500);
   }).catch(() => {
-    // Fallback: select the text
-    const textEl = document.querySelector('.gmail-search-text');
+    // Fallback: select the text for manual copy
+    const textEl = document.getElementById('gmailSearchText');
     if (textEl) {
       const range = document.createRange();
       range.selectNodeContents(textEl);
