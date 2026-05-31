@@ -2,783 +2,537 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Wisdom Library</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap');
-
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
   :root {
-    --bg: #f5f0e8;
-    --card: #ffffff;
-    --text: #2c2418;
-    --text-secondary: #6b5d4d;
-    --accent-devo: #2d5a27;
-    --accent-devo-light: #e8f0e6;
-    --accent-moss: #1a4a6b;
-    --accent-moss-light: #e3eef5;
-    --accent-dm: #8b3a1d;
-    --accent-dm-light: #f5ebe6;
-    --border: #d9d0c3;
-    --shadow: 0 2px 12px rgba(44,36,24,0.08);
-    --radius: 12px;
+    --bg:        #0f0f0f;
+    --surface:   #1a1a1a;
+    --border:    #2a2a2a;
+    --text:      #e8e4dc;
+    --muted:     #777;
+    --green:     #4a7c59;
+    --green-dim: #2a4a35;
+    --blue:      #3a6b9e;
+    --blue-dim:  #1e3d5e;
+    --brown:     #8b6340;
+    --brown-dim: #4a3320;
+    --purple:    #6b4fa0;
+    --purple-dim:#3a2860;
+    --teal:      #2a8a7e;
+    --teal-dim:  #164840;
+    --radius:    12px;
+    --card-pad:  18px;
   }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'DM Sans', sans-serif;
     background: var(--bg);
     color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
     min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
+    padding-bottom: 40px;
   }
 
+  /* ── HEADER ── */
   .header {
-    background: linear-gradient(135deg, #2c2418 0%, #4a3c2e 100%);
-    color: #f5f0e8;
-    padding: 24px 20px 16px;
+    padding: 28px 16px 0;
+    text-align: center;
+  }
+  .header h1 {
+    font-family: 'Lora', serif;
+    font-size: 1.7rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  .header p {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* ── SEARCH ── */
+  .search-wrap {
+    padding: 16px 16px 0;
     position: sticky;
     top: 0;
     z-index: 100;
-  }
-  .header h1 {
-    font-family: 'Libre Baskerville', serif;
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: -0.3px;
-    margin-bottom: 2px;
-  }
-  .header .subtitle {
-    font-size: 12px;
-    opacity: 0.6;
-    font-weight: 400;
-  }
-
-  .tabs {
-    display: flex;
-    gap: 0;
-    background: #1e1812;
-    padding: 0 16px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .tabs::-webkit-scrollbar { display: none; }
-  .tab {
-    padding: 12px 16px;
-    font-size: 13px;
-    font-weight: 600;
-    color: rgba(245,240,232,0.5);
-    border: none;
-    background: none;
-    cursor: pointer;
-    white-space: nowrap;
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s;
-    font-family: 'DM Sans', sans-serif;
-  }
-  .tab.active { color: #f5f0e8; }
-  .tab[data-tab="devo"].active { border-bottom-color: var(--accent-devo); }
-  .tab[data-tab="moss"].active { border-bottom-color: var(--accent-moss); }
-  .tab[data-tab="dm"].active { border-bottom-color: var(--accent-dm); }
-
-  .search-area {
-    padding: 16px 16px 8px;
-    position: sticky;
-    top: 74px;
-    z-index: 99;
     background: var(--bg);
   }
-  .search-box {
-    position: relative;
-  }
-  .search-box svg {
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 18px;
-    height: 18px;
-    color: var(--text-secondary);
-  }
-  .search-box input {
+  .search-wrap input {
     width: 100%;
-    padding: 14px 44px 14px 42px;
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius);
-    font-size: 15px;
-    font-family: 'DM Sans', sans-serif;
-    background: var(--card);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
     color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    padding: 12px 16px;
     outline: none;
     transition: border-color 0.2s;
   }
-  .search-box input:focus { border-color: var(--text-secondary); }
-  .search-box input::placeholder { color: #b0a494; }
-  .btn-clear {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--border);
-    border: none;
-    border-radius: 50%;
-    width: 22px;
-    height: 22px;
-    font-size: 13px;
-    color: var(--text-secondary);
-    cursor: pointer;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
+  .search-wrap input::placeholder { color: var(--muted); }
+  .search-wrap input:focus { border-color: #444; }
+
+  /* ── TABS ── */
+  .tabs-wrap {
+    overflow-x: auto;
+    padding: 12px 16px 0;
+    scrollbar-width: none;
+  }
+  .tabs-wrap::-webkit-scrollbar { display: none; }
+  .tabs {
+    display: flex;
+    gap: 8px;
+    width: max-content;
+  }
+  .tab {
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
     font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 400;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
   }
-  .btn-clear.show { display: flex; }
-  .search-hint {
-    font-size: 11px;
-    color: var(--text-secondary);
-    margin-top: 6px;
-    padding-left: 4px;
-  }
-  .result-count {
-    font-size: 12px;
-    color: var(--text-secondary);
-    padding: 8px 20px 4px;
-    font-weight: 500;
+  .tab:hover { color: var(--text); border-color: #444; }
+
+  .tab.active[data-tab="Devotionals"]  { background: var(--green-dim);  border-color: var(--green);  color: #8ecfa4; }
+  .tab.active[data-tab="Mark Moss"]    { background: var(--blue-dim);   border-color: var(--blue);   color: #7ab3e0; }
+  .tab.active[data-tab="Dan Martell"]  { background: var(--brown-dim);  border-color: var(--brown);  color: #c4956a; }
+  .tab.active[data-tab="AI"]           { background: var(--purple-dim); border-color: var(--purple); color: #b09de0; }
+  .tab.active[data-tab="Business"]     { background: var(--teal-dim);   border-color: var(--teal);   color: #5ecfc4; }
+
+  /* ── STATUS ── */
+  .status {
+    text-align: center;
+    padding: 48px 16px;
+    color: var(--muted);
+    font-size: 0.85rem;
   }
 
-  .cards { padding: 4px 16px 100px; }
+  /* ── CARDS ── */
+  .cards {
+    padding: 14px 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 
   .card {
-    background: var(--card);
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 16px;
-    margin-bottom: 12px;
-    box-shadow: var(--shadow);
-    border-left: 4px solid var(--accent-devo);
-    animation: fadeUp 0.25s ease both;
+    padding: var(--card-pad);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
   }
-  .card[data-source="moss"] { border-left-color: var(--accent-moss); }
-  .card[data-source="dm"] { border-left-color: var(--accent-dm); }
+  .card:hover { border-color: #3a3a3a; }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+  /* accent strip */
+  .card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
   }
-
-  .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 8px;
-    gap: 8px;
-  }
-  .card-source {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    white-space: nowrap;
-  }
-  .card[data-source="devo"] .card-source { color: var(--accent-devo); background: var(--accent-devo-light); }
-  .card[data-source="moss"] .card-source { color: var(--accent-moss); background: var(--accent-moss-light); }
-  .card[data-source="dm"] .card-source { color: var(--accent-dm); background: var(--accent-dm-light); }
+  .card[data-tab="Devotionals"]::before  { background: var(--green); }
+  .card[data-tab="Mark Moss"]::before    { background: var(--blue); }
+  .card[data-tab="Dan Martell"]::before  { background: var(--brown); }
+  .card[data-tab="AI"]::before           { background: var(--purple); }
+  .card[data-tab="Business"]::before     { background: var(--teal); }
 
   .card-date {
-    font-size: 12px;
-    color: var(--text-secondary);
-    white-space: nowrap;
-    padding-top: 2px;
-  }
-  .card-title {
-    font-family: 'Libre Baskerville', serif;
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1.4;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     margin-bottom: 6px;
+  }
+
+  .card-title {
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.35;
     color: var(--text);
-  }
-  .card-author {
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin-bottom: 10px;
-  }
-  .card-scripture {
-    font-size: 12px;
-    font-style: italic;
-    color: var(--accent-devo);
     margin-bottom: 8px;
-    line-height: 1.4;
-    font-family: 'Libre Baskerville', serif;
   }
+
   .card-summary {
-    font-size: 13px;
+    font-size: 0.83rem;
     line-height: 1.6;
-    color: var(--text);
-    display: none;
+    color: #aaa;
     margin-bottom: 10px;
   }
-  .card.expanded .card-summary { display: block; }
+
+  .card-scripture {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    border-left: 2px solid var(--border);
+  }
 
   .card-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: 5px;
     margin-bottom: 10px;
   }
   .tag {
-    font-size: 10px;
-    font-weight: 600;
+    font-size: 0.68rem;
     padding: 3px 8px;
-    border-radius: 20px;
-    background: var(--bg);
-    color: var(--text-secondary);
-    white-space: nowrap;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+    text-transform: lowercase;
   }
+  .card[data-tab="Devotionals"]  .tag { background: var(--green-dim);  color: #8ecfa4; }
+  .card[data-tab="Mark Moss"]    .tag { background: var(--blue-dim);   color: #7ab3e0; }
+  .card[data-tab="Dan Martell"]  .tag { background: var(--brown-dim);  color: #c4956a; }
+  .card[data-tab="AI"]           .tag { background: var(--purple-dim); color: #b09de0; }
+  .card[data-tab="Business"]     .tag { background: var(--teal-dim);   color: #5ecfc4; }
 
-  .card-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 8px;
-    border-top: 1px solid #f0ebe3;
-  }
-  .btn-expand {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px 0;
+  .find-btn {
     font-family: 'DM Sans', sans-serif;
-  }
-  .btn-gmail {
-    font-size: 12px;
-    font-weight: 600;
-    color: #fff;
-    background: var(--accent-devo);
-    border: none;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 6px 12px;
     border-radius: 6px;
-    padding: 7px 12px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
     cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
   }
-  .card[data-source="moss"] .btn-gmail { background: var(--accent-moss); }
-  .card[data-source="dm"] .btn-gmail { background: var(--accent-dm); }
+  .find-btn:hover { color: var(--text); border-color: #555; }
 
-  .card-action-item {
-    font-size: 12px;
-    color: var(--text-secondary);
-    background: #faf7f2;
-    padding: 8px 10px;
-    border-radius: 6px;
-    margin-bottom: 10px;
+  /* ── POPUP ── */
+  .popup-overlay {
     display: none;
-    line-height: 1.4;
-  }
-  .card-action-item strong { color: var(--text); }
-  .card.expanded .card-action-item { display: block; }
-
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text-secondary);
-  }
-  .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
-  .empty-state p { font-size: 14px; line-height: 1.5; }
-
-  .loading {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text-secondary);
-  }
-  .loading .spinner {
-    width: 32px;
-    height: 32px;
-    border: 3px solid var(--border);
-    border-top-color: var(--accent-devo);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 16px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .status-bar {
-    font-size: 10px;
-    color: var(--text-secondary);
-    text-align: center;
-    padding: 4px;
-    opacity: 0.5;
-  }
-
-  mark {
-    background: #fce9a0;
-    color: inherit;
-    padding: 0 1px;
-    border-radius: 2px;
-  }
-
-  /* Gmail search popup overlay */
-  .gmail-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(44,36,24,0.5);
-    z-index: 1000;
-    display: flex;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
     align-items: flex-end;
     justify-content: center;
-    animation: fadeIn 0.15s ease;
-    padding: 16px;
   }
-  @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
-  .gmail-popup {
-    background: var(--card);
-    border-radius: 16px 16px 12px 12px;
+  .popup-overlay.open { display: flex; }
+  .popup {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 16px 16px 0 0;
+    padding: 24px 20px 36px;
     width: 100%;
-    max-width: 400px;
-    padding: 20px;
-    margin-bottom: env(safe-area-inset-bottom, 16px);
-    box-shadow: 0 -4px 30px rgba(0,0,0,0.2);
-    animation: slideUp 0.2s ease;
+    max-width: 600px;
   }
-  @keyframes slideUp { from { transform:translateY(40px); opacity:0 } to { transform:translateY(0); opacity:1 } }
-  .gmail-popup h3 {
-    font-family: 'Libre Baskerville', serif;
-    font-size: 15px;
-    margin-bottom: 12px;
+  .popup h3 {
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    margin-bottom: 6px;
     color: var(--text);
   }
-  .gmail-popup p {
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin-bottom: 10px;
-    line-height: 1.4;
+  .popup p {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 14px;
   }
-  .gmail-search-text {
-    background: var(--bg);
-    border: 1.5px solid var(--border);
+  .popup-search {
+    background: #111;
+    border: 1px solid #333;
     border-radius: 8px;
-    padding: 10px 12px;
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
     color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    padding: 12px 14px;
+    width: 100%;
+    margin-bottom: 12px;
     word-break: break-all;
-    margin-bottom: 12px;
-    user-select: all;
-    -webkit-user-select: all;
+    cursor: text;
+    outline: none;
+    resize: none;
+    min-height: 60px;
   }
-  .gmail-popup-actions {
-    display: flex;
-    gap: 8px;
-  }
-  .gmail-popup-actions button {
+  .popup-actions { display: flex; gap: 8px; }
+  .btn-copy {
     flex: 1;
-    padding: 12px;
+    padding: 11px;
     border-radius: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
     border: none;
-  }
-  .btn-copy-search {
-    background: var(--accent-devo);
-    color: #fff;
-  }
-  .btn-open-gmail {
-    background: var(--bg);
+    background: #333;
     color: var(--text);
-    border: 1.5px solid var(--border) !important;
-  }
-  .btn-close-popup {
-    background: none;
-    color: var(--text-secondary);
-    font-size: 12px;
-    padding: 8px;
-  }
-  .toast {
-    position: fixed;
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #2c2418;
-    color: #f5f0e8;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    z-index: 1100;
-    animation: toastIn 0.2s ease, toastOut 0.3s ease 1.5s forwards;
     font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
   }
-  @keyframes toastIn { from { opacity:0; transform:translateX(-50%) translateY(10px) } to { opacity:1; transform:translateX(-50%) translateY(0) } }
-  @keyframes toastOut { to { opacity:0; transform:translateX(-50%) translateY(-10px) } }
+  .btn-copy:hover { background: #444; }
+  .btn-close {
+    padding: 11px 18px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+
+  /* ── COUNT ── */
+  .count-bar {
+    padding: 10px 16px 0;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
 </style>
 </head>
 <body>
 
 <div class="header">
   <h1>Wisdom Library</h1>
-  <div class="subtitle">Devotionals · Mark Moss · Dan Martell</div>
+  <p>Your personal knowledge archive</p>
 </div>
 
-<div class="tabs">
-  <button class="tab active" data-tab="devo">📖 Devotionals</button>
-  <button class="tab" data-tab="moss">📈 Mark Moss</button>
-  <button class="tab" data-tab="dm">🚀 Dan Martell</button>
+<div class="search-wrap">
+  <input type="search" id="searchInput" placeholder="Search titles, summaries, tags…" autocomplete="off">
 </div>
 
-<div class="search-area">
-  <div class="search-box">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
-    <input type="text" id="searchInput" placeholder="Search topics, scripture, keywords...">
-    <button class="btn-clear" id="clearBtn" onclick="clearSearch()">✕</button>
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab active" data-tab="Devotionals">📖 Devotionals</button>
+    <button class="tab" data-tab="Mark Moss">📈 Mark Moss</button>
+    <button class="tab" data-tab="Dan Martell">🚀 Dan Martell</button>
+    <button class="tab" data-tab="AI">🤖 AI</button>
+    <button class="tab" data-tab="Business">💼 Business</button>
   </div>
-  <div class="search-hint" id="searchHint">Search across titles, scripture, tags, and summaries</div>
 </div>
 
-<div class="result-count" id="resultCount"></div>
-<div class="cards" id="cardContainer">
-  <div class="loading"><div class="spinner"></div><p>Loading wisdom...</p></div>
+<div class="count-bar" id="countBar"></div>
+<div id="cards" class="cards"></div>
+<div id="status" class="status">Loading…</div>
+
+<!-- Gmail search popup -->
+<div class="popup-overlay" id="popup">
+  <div class="popup">
+    <h3>Find in Gmail</h3>
+    <p>Copy this search string and paste it into Gmail's search bar.</p>
+    <textarea class="popup-search" id="popupText" readonly></textarea>
+    <div class="popup-actions">
+      <button class="btn-copy" id="copyBtn">Copy to clipboard</button>
+      <button class="btn-close" onclick="closePopup()">Close</button>
+    </div>
+  </div>
 </div>
-<div class="status-bar" id="statusBar"></div>
 
 <script>
-// ============================================================
-// CONFIGURATION — Update these URLs after publishing your sheet
-// ============================================================
-// Instructions:
-// 1. Open your Google Sheet
-// 2. File → Share → Publish to web
-// 3. Select each tab individually, choose "Comma-separated values (.csv)"
-// 4. Copy each URL below
-//
-// FORMAT: https://docs.google.com/spreadsheets/d/e/XXXXX/pub?gid=YYYYYY&single=true&output=csv
-// ============================================================
-
-const SHEET_URLS = {
-  // Your published Google Sheet CSV URLs
-  devo: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9pJVqSfaxBxr3XHVxUJSrd2fbp30Afip4RG2ijzRTS1zLbbGshIlbzSgUd2Vejcamu1KAQxA591Au/pub?gid=19034336&single=true&output=csv",
-  moss: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9pJVqSfaxBxr3XHVxUJSrd2fbp30Afip4RG2ijzRTS1zLbbGshIlbzSgUd2Vejcamu1KAQxA591Au/pub?gid=1138198135&single=true&output=csv",
-  dm:   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9pJVqSfaxBxr3XHVxUJSrd2fbp30Afip4RG2ijzRTS1zLbbGshIlbzSgUd2Vejcamu1KAQxA591Au/pub?gid=2002495787&single=true&output=csv",
+const TABS = {
+  'Devotionals': {
+    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9pJVqSfaxBxr3XHVxUJSrd2fbp30Afip4RG2ijzRTS1zLbbGshIlbzSgUd2Vejcamu1KAQxA591Au/pub?gid=19034336&single=true&output=csv',
+    color: 'var(--green)'
+  },
+  'Mark Moss': {
+    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9pJVqSfaxBxr3XHVxUJSrd2fbp30Afip4RG2ijzRTS1zLbbGshIlbzSgUd2Vejcamu1KAQxA591Au/pub?gid=1138198135&single=true&output=csv',
+    color: 'var(--blue)'
+  },
+  'Dan Martell': {
+    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9pJVqSfaxBxr3XHVxUJSrd2fbp30Afip4RG2ijzRTS1zLbbGshIlbzSgUd2Vejcamu1KAQxA591Au/pub?gid=2002495787&single=true&output=csv',
+    color: 'var(--brown)'
+  },
+  'AI': {
+    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9pJVqSfaxBxr3XHVxUJSrd2fbp30Afip4RG2ijzRTS1zLbbGshIlbzSgUd2Vejcamu1KAQxA591Au/pub?gid=363328701&single=true&output=csv',
+    color: 'var(--purple)'
+  },
+  'Business': {
+    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9pJVqSfaxBxr3XHVxUJSrd2fbp30Afip4RG2ijzRTS1zLbbGshIlbzSgUd2Vejcamu1KAQxA591Au/pub?gid=185710635&single=true&output=csv',
+    color: 'var(--teal)'
+  }
 };
 
-// ============================================================
-
-const DATA = { devo: [], moss: [], dm: [] };
-let activeTab = 'devo';
+let currentTab = 'Devotionals';
+let allData = {};
 let searchQuery = '';
-let dataLoaded = false;
 
-// ---- CSV PARSER ----
+// ── CSV PARSER ──────────────────────────────────────────────
 function parseCSV(text) {
   const rows = [];
-  let current = '';
-  let inQuotes = false;
-  const chars = text.split('');
-  let row = [];
-
-  for (let i = 0; i < chars.length; i++) {
-    const c = chars[i];
-    if (inQuotes) {
-      if (c === '"' && chars[i+1] === '"') {
-        current += '"';
-        i++;
-      } else if (c === '"') {
-        inQuotes = false;
+  const lines = text.split('\n');
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    const cols = [];
+    let inQuote = false, cur = '';
+    for (let c = 0; c < line.length; c++) {
+      const ch = line[c];
+      if (ch === '"') {
+        if (inQuote && line[c+1] === '"') { cur += '"'; c++; }
+        else inQuote = !inQuote;
+      } else if (ch === ',' && !inQuote) {
+        cols.push(cur); cur = '';
       } else {
-        current += c;
-      }
-    } else {
-      if (c === '"') {
-        inQuotes = true;
-      } else if (c === ',') {
-        row.push(current.trim());
-        current = '';
-      } else if (c === '\n') {
-        row.push(current.trim());
-        if (row.some(cell => cell.length > 0)) rows.push(row);
-        row = [];
-        current = '';
-      } else if (c !== '\r') {
-        current += c;
+        cur += ch;
       }
     }
-  }
-  if (current || row.length > 0) {
-    row.push(current.trim());
-    if (row.some(cell => cell.length > 0)) rows.push(row);
+    cols.push(cur);
+    if (cols.length >= 2 && cols[0]) rows.push(cols);
   }
   return rows;
 }
 
-// ---- LOAD DATA FROM SHEETS ----
-async function loadData() {
-  const container = document.getElementById('cardContainer');
-  const statusBar = document.getElementById('statusBar');
-
-  // Check if URLs have been configured
-  if (SHEET_URLS.devo.includes('PASTE_YOUR')) {
-    container.innerHTML = `<div class="empty-state"><div class="icon">⚙️</div><p>Sheet URLs not configured yet.<br>Follow the setup instructions to connect your Google Sheet.</p></div>`;
-    return;
-  }
-
+// ── FETCH TAB ───────────────────────────────────────────────
+async function fetchTab(tabKey) {
+  if (allData[tabKey]) return allData[tabKey];
+  const url = TABS[tabKey].url;
   try {
-    const [devoResp, mossResp, dmResp] = await Promise.all([
-      fetch(SHEET_URLS.devo).then(r => r.text()),
-      fetch(SHEET_URLS.moss).then(r => r.text()),
-      fetch(SHEET_URLS.dm).then(r => r.text()),
-    ]);
-
-    // Parse Devotionals: Date, Source, Author, Title, Scripture, Tags, Summary, Gmail
-    const devoRows = parseCSV(devoResp);
-    DATA.devo = devoRows.slice(1).map(r => ({
-      date: r[0] || '',
-      source: r[1] || '',
-      author: r[2] || '',
-      title: r[3] || '',
-      scripture: r[4] || '',
-      tags: (r[5] || '').split(',').map(t => t.trim()).filter(Boolean),
-      summary: r[6] || '',
-      gmailUrl: r[7] || '',
-    })).filter(r => r.title);
-
-    // Parse Mark Moss: Date, Source, Title, Insight, Tags, Action, Gmail
-    const mossRows = parseCSV(mossResp);
-    DATA.moss = mossRows.slice(1).map(r => ({
-      date: r[0] || '',
-      source: r[1] || 'Mark Moss',
-      title: r[2] || '',
-      insight: r[3] || '',
-      tags: (r[4] || '').split(',').map(t => t.trim()).filter(Boolean),
-      action: r[5] || '',
-      gmailUrl: r[6] || '',
-    })).filter(r => r.title);
-
-    // Parse Dan Martell: Date, Source, Title, Insight, Tags, Action, Gmail
-    const dmRows = parseCSV(dmResp);
-    DATA.dm = dmRows.slice(1).map(r => ({
-      date: r[0] || '',
-      source: r[1] || 'Dan Martell',
-      title: r[2] || '',
-      insight: r[3] || '',
-      tags: (r[4] || '').split(',').map(t => t.trim()).filter(Boolean),
-      action: r[5] || '',
-      gmailUrl: r[6] || '',
-    })).filter(r => r.title);
-
-    dataLoaded = true;
-    statusBar.textContent = `${DATA.devo.length} devotionals · ${DATA.moss.length} Mark Moss · ${DATA.dm.length} Dan Martell`;
-    renderCards();
-
-  } catch (err) {
-    container.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>Couldn't load data. Check your internet connection and sheet URLs.<br><br><small>${err.message}</small></p></div>`;
+    const res = await fetch(url);
+    const text = await res.text();
+    allData[tabKey] = parseCSV(text);
+    return allData[tabKey];
+  } catch(e) {
+    return [];
   }
 }
 
-// ---- SEARCH & RENDER ----
-function highlightText(text, query) {
-  if (!query || query.length < 2) return text;
-  const terms = query.toLowerCase().split(/\s+/).filter(t => t.length >= 2);
-  let result = text;
-  terms.forEach(term => {
-    const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
-    result = result.replace(regex, '<mark>$1</mark>');
-  });
-  return result;
-}
+// ── RENDER ──────────────────────────────────────────────────
+function renderCards(rows, tabKey) {
+  const container = document.getElementById('cards');
+  const status    = document.getElementById('status');
+  const countBar  = document.getElementById('countBar');
+  container.innerHTML = '';
 
-function formatDate(dateStr) {
-  if (!dateStr) return '';
-  try {
-    const d = new Date(dateStr + 'T00:00:00');
-    return d.toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' });
-  } catch { return dateStr; }
-}
-
-function matchesSearch(item, query) {
-  if (!query || query.length < 2) return true;
-  const terms = query.toLowerCase().split(/\s+/).filter(t => t.length >= 2);
-  const searchable = [
-    item.title || '',
-    item.scripture || '',
-    item.summary || item.insight || '',
-    item.author || '',
-    item.source || '',
-    (item.tags || []).join(' '),
-    item.action || ''
-  ].join(' ').toLowerCase();
-  return terms.every(term => searchable.includes(term));
-}
-
-function renderCards() {
-  if (!dataLoaded) return;
-  const container = document.getElementById('cardContainer');
-  const countEl = document.getElementById('resultCount');
-  const items = DATA[activeTab];
-  const filtered = items.filter(item => matchesSearch(item, searchQuery));
-
-  countEl.textContent = searchQuery.length >= 2
-    ? `${filtered.length} of ${items.length} entries`
-    : `${items.length} entries`;
+  const q = searchQuery.toLowerCase();
+  const filtered = q
+    ? rows.filter(r => r.join(' ').toLowerCase().includes(q))
+    : rows;
 
   if (filtered.length === 0) {
-    container.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>No results for "${searchQuery}"<br>Try different keywords</p></div>`;
+    status.style.display = 'block';
+    status.textContent = rows.length === 0 ? 'No entries yet.' : 'No results for "' + searchQuery + '"';
+    countBar.textContent = '';
     return;
   }
 
-  const sourceType = activeTab;
+  status.style.display = 'none';
+  countBar.textContent = filtered.length + ' ' + (filtered.length === 1 ? 'entry' : 'entries');
 
-  container.innerHTML = filtered.map((item, i) => {
-    const isDevo = activeTab === 'devo';
-    const contentText = isDevo ? (item.summary || '') : (item.insight || '');
-    const q = searchQuery;
-    const gmailUrl = item.gmailUrl || '#';
+  filtered.forEach(row => {
+    const [date, title, tags, summary, scripture, gmailUrl] = row;
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.tab = tabKey;
 
-    return `
-      <div class="card" data-source="${sourceType}" style="animation-delay:${Math.min(i * 0.03, 0.5)}s">
-        <div class="card-top">
-          <span class="card-source">${isDevo ? item.source : (activeTab === 'moss' ? 'Mark Moss' : 'Dan Martell')}</span>
-          <span class="card-date">${formatDate(item.date)}</span>
-        </div>
-        <div class="card-title">${highlightText(item.title, q)}</div>
-        ${isDevo ? `<div class="card-author">${item.author}</div>` : ''}
-        ${isDevo && item.scripture && !item.scripture.startsWith('(') ? `<div class="card-scripture">${highlightText(item.scripture, q)}</div>` : ''}
-        <div class="card-tags">${(item.tags||[]).map(t => `<span class="tag">${highlightText(t, q)}</span>`).join('')}</div>
-        <div class="card-summary">${highlightText(contentText, q)}</div>
-        ${!isDevo && item.action ? `<div class="card-action-item"><strong>→ Action:</strong> ${highlightText(item.action, q)}</div>` : ''}
-        <div class="card-actions">
-          <button class="btn-expand" onclick="toggleCard(this)">Read more ▾</button>
-          <button class="btn-gmail" onclick="showGmailPopup('${gmailUrl}', this)">📧 Find Email</button>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function toggleCard(btn) {
-  const card = btn.closest('.card');
-  card.classList.toggle('expanded');
-  btn.textContent = card.classList.contains('expanded') ? 'Show less ▴' : 'Read more ▾';
-}
-
-function clearSearch() {
-  const input = document.getElementById('searchInput');
-  input.value = '';
-  searchQuery = '';
-  document.getElementById('clearBtn').classList.remove('show');
-  renderCards();
-  input.focus();
-}
-
-// ---- EVENTS ----
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    activeTab = tab.dataset.tab;
-    const hint = document.getElementById('searchHint');
-    hint.textContent = activeTab === 'devo'
-      ? 'Search across titles, scripture, tags, and summaries'
-      : 'Search across titles, tags, insights, and action items';
-    renderCards();
-  });
-});
-
-let debounceTimer;
-document.getElementById('searchInput').addEventListener('input', (e) => {
-  clearTimeout(debounceTimer);
-  const clearBtn = document.getElementById('clearBtn');
-  clearBtn.classList.toggle('show', e.target.value.length > 0);
-  debounceTimer = setTimeout(() => {
-    searchQuery = e.target.value.trim();
-    renderCards();
-  }, 150);
-});
-
-// ---- GMAIL SEARCH POPUP ----
-function extractSearchQuery(gmailUrl) {
-  try {
-    const encoded = gmailUrl.split('#search/')[1] || '';
-    return decodeURIComponent(encoded.replace(/%20/g, ' '));
-  } catch { 
-    try { return gmailUrl.split('#search/')[1].replace(/%20/g, ' ').replace(/%3A/g, ':').replace(/%40/g, '@'); }
-    catch { return ''; }
-  }
-}
-
-function showGmailPopup(gmailUrl, btn) {
-  const searchQuery = extractSearchQuery(gmailUrl);
-  
-  // Remove any existing popup
-  const existing = document.querySelector('.gmail-overlay');
-  if (existing) existing.remove();
-
-  const overlay = document.createElement('div');
-  overlay.className = 'gmail-overlay';
-  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
-  
-  // Determine accent color from card
-  const card = btn.closest('.card');
-  const source = card.dataset.source;
-  const accentColor = source === 'moss' ? 'var(--accent-moss)' : source === 'dm' ? 'var(--accent-dm)' : 'var(--accent-devo)';
-  
-  // Store the search query on a data attribute to avoid escaping issues
-  overlay.innerHTML = `
-    <div class="gmail-popup">
-      <h3>📧 Find This Email</h3>
-      <p>Tap <strong>Open Gmail</strong> to try opening it directly. If the search doesn't carry through on mobile, tap <strong>Copy Search</strong> then paste it into Gmail's search bar.</p>
-      <div class="gmail-search-text" id="gmailSearchText">${searchQuery}</div>
-      <div class="gmail-popup-actions">
-        <button class="btn-copy-search" style="background:${accentColor}" id="btnCopySearch">📋 Copy Search</button>
-        <button class="btn-open-gmail" id="btnOpenGmail">Open Gmail →</button>
-      </div>
-      <button class="btn-close-popup" onclick="this.closest('.gmail-overlay').remove()">Dismiss</button>
-    </div>
-  `;
-
-  document.body.appendChild(overlay);
-  
-  // Attach events after DOM insertion to avoid escaping issues
-  document.getElementById('btnCopySearch').onclick = () => copySearch(searchQuery);
-  document.getElementById('btnOpenGmail').onclick = () => window.open(gmailUrl, '_blank');
-}
-
-function copySearch(text) {
-  const btn = document.getElementById('btnCopySearch');
-  navigator.clipboard.writeText(text).then(() => {
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.textContent = '✓ Copied — paste in Gmail search';
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
-    
-    const original = btn.innerHTML;
-    btn.innerHTML = '✓ Copied!';
-    setTimeout(() => { btn.innerHTML = original; }, 1500);
-  }).catch(() => {
-    // Fallback: select the text for manual copy
-    const textEl = document.getElementById('gmailSearchText');
-    if (textEl) {
-      const range = document.createRange();
-      range.selectNodeContents(textEl);
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
+    let tagsHtml = '';
+    if (tags) {
+      tagsHtml = '<div class="card-tags">' +
+        tags.split(',').map(t => `<span class="tag">${t.trim()}</span>`).join('') +
+        '</div>';
     }
+
+    const scriptureHtml = scripture
+      ? `<div class="card-scripture">${scripture}</div>` : '';
+
+    const btnHtml = gmailUrl
+      ? `<button class="find-btn" onclick="showPopup('${escapeAttr(gmailUrl)}')">Find in Gmail</button>` : '';
+
+    card.innerHTML = `
+      <div class="card-date">${date || ''}</div>
+      <div class="card-title">${title || '(untitled)'}</div>
+      ${summary ? `<div class="card-summary">${summary}</div>` : ''}
+      ${scriptureHtml}
+      ${tagsHtml}
+      ${btnHtml}
+    `;
+    container.appendChild(card);
   });
 }
 
-// ---- INIT ----
-loadData();
+function escapeAttr(str) {
+  return str.replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+}
+
+// ── LOAD & SWITCH TAB ────────────────────────────────────────
+async function loadTab(tabKey) {
+  currentTab = tabKey;
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === tabKey);
+  });
+
+  const status = document.getElementById('status');
+  const cards  = document.getElementById('cards');
+  status.style.display = 'block';
+  status.textContent = 'Loading…';
+  cards.innerHTML = '';
+  document.getElementById('countBar').textContent = '';
+
+  const rows = await fetchTab(tabKey);
+  renderCards(rows, tabKey);
+}
+
+// ── SEARCH ──────────────────────────────────────────────────
+document.getElementById('searchInput').addEventListener('input', async function() {
+  searchQuery = this.value.trim();
+  const rows = await fetchTab(currentTab);
+  renderCards(rows, currentTab);
+});
+
+// ── TAB CLICKS ──────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    searchQuery = '';
+    document.getElementById('searchInput').value = '';
+    loadTab(btn.dataset.tab);
+  });
+});
+
+// ── POPUP ───────────────────────────────────────────────────
+function showPopup(url) {
+  // Extract the Gmail search string from the URL
+  try {
+    const match = url.match(/#search\/(.+)$/);
+    const searchStr = match
+      ? decodeURIComponent(match[1])
+      : decodeURIComponent(url.split('?q=')[1] || url);
+    document.getElementById('popupText').value = searchStr;
+  } catch(e) {
+    document.getElementById('popupText').value = url;
+  }
+  document.getElementById('popup').classList.add('open');
+}
+
+function closePopup() {
+  document.getElementById('popup').classList.remove('open');
+}
+
+document.getElementById('popup').addEventListener('click', function(e) {
+  if (e.target === this) closePopup();
+});
+
+document.getElementById('copyBtn').addEventListener('click', function() {
+  const text = document.getElementById('popupText').value;
+  navigator.clipboard.writeText(text).then(() => {
+    this.textContent = 'Copied!';
+    setTimeout(() => this.textContent = 'Copy to clipboard', 1800);
+  });
+});
+
+// ── INIT ────────────────────────────────────────────────────
+loadTab('Devotionals');
 </script>
 </body>
 </html>
